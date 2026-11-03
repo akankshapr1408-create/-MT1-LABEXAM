@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Book Management System</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --accent: #8b5cf6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: white;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .badge-container {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      backdrop-filter: blur(4px);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.75rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    .card h2 {
+      font-size: 1.35rem;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .stat-item .num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-item .label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.9rem;
+    }
+
+    tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    ul.endpoint-list {
+      list-style: none;
+    }
+
+    ul.endpoint-list li {
+      padding: 0.6rem 0;
+      border-bottom: 1px dashed var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+    }
+
+    ul.endpoint-list li:last-child {
+      border-bottom: none;
+    }
+
+    .method {
+      font-family: monospace;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .method.get { background: #dbeafe; color: #1e40af; }
+    .method.post { background: #dcfce7; color: #166534; }
+    .method.put { background: #fef3c7; color: #92400e; }
+    .method.delete { background: #fee2e2; color: #991b1b; }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: white;
+    }
+
+    .btn-outline:hover {
+      background: #f1f5f9;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Library Book Management System</h1>
+    <p>Demonstrating Node.js Built-in HTTP & FS Modules with Express.js REST APIs</p>
+    <div class="badge-container">
+      <span class="badge">Part A: HTTP Module (Port 3000)</span>
+      <span class="badge">Part B: Express.js REST API (Port 4000)</span>
+      <span class="badge">Static File Serving (FS Module)</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="nav-links">
+      <a href="/" class="btn btn-outline">&larr; Back to Welcome (/)</a>
+      <a href="/books" class="btn btn-primary" target="_blank">View Books JSON (/books)</a>
+      <a href="/about" class="btn btn-outline">Application Info (/about)</a>
+    </div>
+
+    <div class="grid">
+      <!-- Quick Statistics -->
+      <div class="card">
+        <h2>System Overview</h2>
+        <p>This static HTML page is served directly using the native Node.js <code>fs</code> module when accessing the <code>/home</code> route.</p>
+        <div class="stats">
+          <div class="stat-item">
+            <div class="num">3+</div>
+            <div class="label">Sample Books</div>
+          </div>
+          <div class="stat-item">
+            <div class="num">2</div>
+            <div class="label">Server Modules</div>
+          </div>
+          <div class="stat-item">
+            <div class="num">100%</div>
+            <div class="label">ES6 Modules</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part A Routes -->
+      <div class="card">
+        <h2>Part A: HTTP Server Routes (Port 3000)</h2>
+        <ul class="endpoint-list">
+          <li>
+            <span><code>GET /</code> Welcome Page</span>
+            <span class="method get">GET</span>
+          </li>
+          <li>
+            <span><code>GET /books</code> Book Records (JSON)</span>
+            <span class="method get">GET</span>
+          </li>
+          <li>
+            <span><code>GET /about</code> About Library</span>
+            <span class="method get">GET</span>
+          </li>
+          <li>
+            <span><code>GET /home</code> Static File via FS</span>
+            <span class="method get">GET</span>
+          </li>
+          <li>
+            <span><code>POST /add-book</code> Add New Book</span>
+            <span class="method post">POST</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Part B Express API Information -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <h2>Part B: Express.js REST API Endpoints (Port 4000)</h2>
+      <ul class="endpoint-list">
+        <li>
+          <span><code>GET /books</code> - Retrieve all books in catalog</span>
+          <span class="method get">GET</span>
+        </li>
+        <li>
+          <span><code>GET /books/:id</code> - Retrieve single book record by ID</span>
+          <span class="method get">GET</span>
+        </li>
+        <li>
+          <span><code>POST /books</code> - Create a new book record (HTTP 201)</span>
+          <span class="method post">POST</span>
+        </li>
+        <li>
+          <span><code>PUT /books/:id</code> - Update existing book record by ID</span>
+          <span class="method put">PUT</span>
+        </li>
+        <li>
+          <span><code>DELETE /books/:id</code> - Remove book record from catalog</span>
+          <span class="method delete">DELETE</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Sample Book Records Table -->
+    <div class="card">
+      <h2>Catalog Preview</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price (INR)</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong></td>
+            <td>The Alchemist</td>
+            <td>Paulo Coelho</td>
+            <td>&#8377;350</td>
+            <td><span class="tag">Fiction</span></td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>To Kill a Mockingbird</td>
+            <td>Harper Lee</td>
+            <td>&#8377;450</td>
+            <td><span class="tag">Classic</span></td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>1984</td>
+            <td>George Orwell</td>
+            <td>&#8377;399</td>
+            <td><span class="tag">Dystopian</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p>MT1 Lab Examination &bull; Full Stack Development &bull; Library Book Management Web Application</p>
+    <p>&copy; 2026 Akanksha Prajapati. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
